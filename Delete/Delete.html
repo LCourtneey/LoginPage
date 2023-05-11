@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Delete User</title>
+    <link rel="stylesheet" href="delete.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>Deletar usuário</h1>
+    <form id="deleteForm">
+      <input type="text" name="userId" placeholder="User ID" required /><br />
+      <input type="submit" value="Delete" />
+    </form>
+
+    <h1>Usuários</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
+    <button onclick="window.location.href = '../login/login.html'">Voltar para login</button>
+  </div>
+
+    <script>
+
+        
+      const userTableBody = document.getElementById("userTableBody");
+
+// Função para preencher a tabela com os dados dos usuários
+function populateUserTable(users) {
+  userTableBody.innerHTML = "";
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    const row = document.createElement("tr");
+    const idCell = document.createElement("td");
+    const usernameCell = document.createElement("td");
+
+    idCell.textContent = user.id;
+    usernameCell.textContent = user.username;
+
+    row.appendChild(idCell);
+    row.appendChild(usernameCell);
+    userTableBody.appendChild(row);
+  }
+}
+
+// Requisição para buscar todos os usuários
+fetch("http://localhost:3000/users")
+  .then((response) => response.json())
+  .then((users) => populateUserTable(users))
+  .catch((error) => console.error(error));
+
+  
+      const deleteForm = document.getElementById("deleteForm");
+      deleteForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(deleteForm);
+        const userId = formData.get("userId");
+
+        const response = await fetch(`http://localhost:3000/users/${userId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          alert("User deleted successfully");
+          window.location.href = ".../login/login.html";
+        } else {
+          const error = await response.json();
+          alert(error.error);
+        }
+      });
+    </script>
+  </body>
+</html>

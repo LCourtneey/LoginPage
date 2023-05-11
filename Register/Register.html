@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Simple API</title>
+    <link rel="stylesheet" href="register.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <h1>Cadastre-se</h1>
+    <form id="registerForm">
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        required
+      /><br />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+      /><br />
+      <input type="submit" value="Register" />
+    </form>
+
+    <p>Já tem uma conta? <a href="../login/Login.html">Login</a></p>
+    <p>Quer deletar um usuário? <a href="../Delete/Delete.html">Deletar usuário</a></p>
+
+    <script>
+      const registerForm = document.getElementById("registerForm");
+      registerForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(registerForm);
+        const username = formData.get("username");
+        const password = formData.get("password");
+
+        const response = await fetch("http://localhost:3000/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+        });
+
+        if (response.ok) {
+          alert("Usuário cadastrado com sucesso!");
+        } else {
+          const error = await response.json();
+          alert(error.error);
+        }
+      });
+    </script>
+  </body>
+</html>
